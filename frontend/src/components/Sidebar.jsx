@@ -20,12 +20,7 @@ export default function Sidebar({
           <div className="no-conversations">No conversations yet</div>
         ) : (
           conversations.map((conv) => (
-            <div
-              key={conv.id}
-              className={`conversation-item ${conv.id === currentConversationId ? 'active' : ''
-                }`}
-              onClick={() => onSelectConversation(conv.id)}
-            >
+            <div key={conv.id} className={`conversation-item ${conv.id === currentConversationId ? 'active' : ''}`} onClick={() => onSelectConversation(conv.id)}>
               <div className="conversation-title">
                 {conv.title || 'New Conversation'}
               </div>
