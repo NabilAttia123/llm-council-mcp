@@ -5,7 +5,69 @@ from .openrouter import query_models_parallel, query_model
 from .config import COUNCIL_MODELS, CHAIRMAN_MODEL
 
 
-async def stage1_collect_responses(user_query: str) -> List[Dict[str, Any]]:
+def format_user_message(content: str, attachments: List[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Format user message with optional attachments."""
+    if not attachments:
+        return {"role": "user", "content": content}
+
+    message_content = [{"type": "text", "text": content}]
+
+    for att in attachments:
+        if att["type"] == "image":
+            # Ensure data URI format
+            url = att["data"]
+            if not url.startswith("data:"):
+                url = f"data:{att['mimeType']};base64,{url}"
+            
+            message_content.append({
+                "type": "image_url",
+                "image_url": {"url": url}
+            })
+        elif att["type"] == "file":
+            # For text files, decode and include as text
+            if att["mimeType"].startswith("text/") or att["mimeType"] == "application/json":
+                try:
+                    import base64
+                    # Get the base64 part
+                    data = att["data"]
+                    if "," in data:
+                        data = data.split(",")[1]
+                    
+                    decoded_bytes = base64.b64decode(data)
+                    decoded_text = decoded_bytes.decode('utf-8')
+                    
+                    filename_label = f"File: {att.get('filename', 'Attached File')}\n"
+                    
+                    message_content.append({
+                        "type": "text",
+                        "text": f"\n--- {filename_label} ---\n{decoded_text}\n----------------\n"
+                    })
+                except Exception as e:
+                    # Fallback to file object if decoding fails
+                    print(f"Error decoding text file: {e}")
+                    url = att["data"]
+                    if not url.startswith("data:"):
+                        url = f"data:{att['mimeType']};base64,{url}"
+                    
+                    message_content.append({
+                        "type": "file",
+                        "file": {"url": url, "type": att["mimeType"]}
+                    })
+            else:
+                # Ensure data URI format
+                url = att["data"]
+                if not url.startswith("data:"):
+                    url = f"data:{att['mimeType']};base64,{url}"
+                    
+                message_content.append({
+                    "type": "file",  # OpenRouter specific extension
+                    "file": {"url": url, "type": att["mimeType"]}
+                })
+
+    return {"role": "user", "content": message_content}
+
+
+async def stage1_collect_responses(user_query: str, attachments: List[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
     """
     Stage 1: Collect individual responses from all council models.
 
@@ -15,7 +77,7 @@ async def stage1_collect_responses(user_query: str) -> List[Dict[str, Any]]:
     Returns:
         List of dicts with 'model' and 'response' keys
     """
-    messages = [{"role": "user", "content": user_query}]
+    messages = [format_user_message(user_query, attachments)]
 
     # Query all models in parallel
     responses = await query_models_parallel(COUNCIL_MODELS, messages)
@@ -34,7 +96,8 @@ async def stage1_collect_responses(user_query: str) -> List[Dict[str, Any]]:
 
 async def stage2_collect_rankings(
     user_query: str,
-    stage1_results: List[Dict[str, Any]]
+    stage1_results: List[Dict[str, Any]],
+    attachments: List[Dict[str, Any]] = None
 ) -> Tuple[List[Dict[str, Any]], Dict[str, str]]:
     """
     Stage 2: Each model ranks the anonymized responses.
@@ -92,7 +155,8 @@ FINAL RANKING:
 
 Now provide your evaluation and ranking:"""
 
-    messages = [{"role": "user", "content": ranking_prompt}]
+    # Include attachments in the ranking prompt context so models can see what they are ranking
+    messages = [format_user_message(ranking_prompt, attachments)]
 
     # Get rankings from all council models in parallel
     responses = await query_models_parallel(COUNCIL_MODELS, messages)
@@ -115,7 +179,8 @@ Now provide your evaluation and ranking:"""
 async def stage3_synthesize_final(
     user_query: str,
     stage1_results: List[Dict[str, Any]],
-    stage2_results: List[Dict[str, Any]]
+    stage2_results: List[Dict[str, Any]],
+    attachments: List[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
     Stage 3: Chairman synthesizes final response.
@@ -156,7 +221,7 @@ Your task as Chairman is to synthesize all of this information into a single, co
 
 Provide a clear, well-reasoned final answer that represents the council's collective wisdom:"""
 
-    messages = [{"role": "user", "content": chairman_prompt}]
+    messages = [format_user_message(chairman_prompt, attachments)]
 
     # Query the chairman model
     response = await query_model(CHAIRMAN_MODEL, messages)
@@ -293,7 +358,7 @@ Title:"""
     return title
 
 
-async def run_full_council(user_query: str) -> Tuple[List, List, Dict, Dict]:
+async def run_full_council(user_query: str, attachments: List[Dict[str, Any]] = None) -> Tuple[List, List, Dict, Dict]:
     """
     Run the complete 3-stage council process.
 
@@ -304,7 +369,7 @@ async def run_full_council(user_query: str) -> Tuple[List, List, Dict, Dict]:
         Tuple of (stage1_results, stage2_results, stage3_result, metadata)
     """
     # Stage 1: Collect individual responses
-    stage1_results = await stage1_collect_responses(user_query)
+    stage1_results = await stage1_collect_responses(user_query, attachments)
 
     # If no models responded successfully, return error
     if not stage1_results:
@@ -314,7 +379,7 @@ async def run_full_council(user_query: str) -> Tuple[List, List, Dict, Dict]:
         }, {}
 
     # Stage 2: Collect rankings
-    stage2_results, label_to_model = await stage2_collect_rankings(user_query, stage1_results)
+    stage2_results, label_to_model = await stage2_collect_rankings(user_query, stage1_results, attachments)
 
     # Calculate aggregate rankings
     aggregate_rankings = calculate_aggregate_rankings(stage2_results, label_to_model)
@@ -323,7 +388,8 @@ async def run_full_council(user_query: str) -> Tuple[List, List, Dict, Dict]:
     stage3_result = await stage3_synthesize_final(
         user_query,
         stage1_results,
-        stage2_results
+        stage2_results,
+        attachments
     )
 
     # Prepare metadata

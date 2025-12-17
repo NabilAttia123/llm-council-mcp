@@ -4,10 +4,11 @@
 }
 
 .final-response {
-  background: #ffffff;
+  background: var(--bg-primary);
   padding: 20px;
   border-radius: 6px;
   border: 1px solid #c8e6c8;
+  transition: background-color 0.3s ease;
 }
 
 .chairman-label {
@@ -19,7 +20,8 @@
 }
 
 .final-text {
-  color: #333;
+  color: var(--text-primary);
   line-height: 1.7;
   font-size: 15px;
+  transition: color 0.3s ease;
 }

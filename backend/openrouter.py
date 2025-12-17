@@ -7,7 +7,7 @@ from .config import OPENROUTER_API_KEY, OPENROUTER_API_URL
 
 async def query_model(
     model: str,
-    messages: List[Dict[str, str]],
+    messages: List[Dict[str, Any]],
     timeout: float = 120.0
 ) -> Optional[Dict[str, Any]]:
     """
@@ -24,12 +24,17 @@ async def query_model(
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
+        "HTTP-Referer": "http://localhost:5173",  # Recommended for OpenRouter rankings
+        "X-Title": "LLM Council",  # Recommended for OpenRouter rankings
     }
 
     payload = {
         "model": model,
         "messages": messages,
     }
+    
+    import json
+    print(f"DEBUG PAYLOAD for {model}: {json.dumps(payload, indent=2)}")
 
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:
@@ -55,7 +60,7 @@ async def query_model(
 
 async def query_models_parallel(
     models: List[str],
-    messages: List[Dict[str, str]]
+    messages: List[Dict[str, Any]]
 ) -> Dict[str, Optional[Dict[str, Any]]]:
     """
     Query multiple models in parallel.
