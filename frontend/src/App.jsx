@@ -72,6 +72,37 @@ function App() {
     setCurrentConversationId(id);
   };
 
+  const handleDeleteConversation = async (id) => {
+    try {
+      await api.deleteConversation(id);
+      setConversations(conversations.filter((c) => c.id !== id));
+      // If we deleted the current conversation, clear it
+      if (currentConversationId === id) {
+        setCurrentConversationId(null);
+        setCurrentConversation(null);
+      }
+    } catch (error) {
+      console.error('Failed to delete conversation:', error);
+    }
+  };
+
+  const handleRenameConversation = async (id, newTitle) => {
+    try {
+      await api.renameConversation(id, newTitle);
+      setConversations(
+        conversations.map((c) =>
+          c.id === id ? { ...c, title: newTitle } : c
+        )
+      );
+      // Update current conversation title too if it's the one being renamed
+      if (currentConversation && currentConversation.id === id) {
+        setCurrentConversation((prev) => ({ ...prev, title: newTitle }));
+      }
+    } catch (error) {
+      console.error('Failed to rename conversation:', error);
+    }
+  };
+
   const handleSendMessage = async (content, attachments = []) => {
     if (!currentConversationId) return;
 
@@ -205,6 +236,8 @@ function App() {
           currentConversationId={currentConversationId}
           onSelectConversation={handleSelectConversation}
           onNewConversation={handleNewConversation}
+          onDeleteConversation={handleDeleteConversation}
+          onRenameConversation={handleRenameConversation}
         />
         <ChatInterface
           conversation={currentConversation}
