@@ -1,5 +1,7 @@
 # LLM Council
 
+> **Note**: This is a fork of [karpathy/llm-council](https://github.com/karpathy/llm-council) with additional features and enhancements.
+
 ![llmcouncil](header.jpg)
 
 The idea of this repo is that instead of asking a question to your favorite LLM provider (e.g. OpenAI GPT 5.1, Google Gemini 3.0 Pro, Anthropic Claude Sonnet 4.5, xAI Grok 4, eg.c), you can group them into your "LLM Council". This repo is a simple, local web app that essentially looks like ChatGPT except it uses OpenRouter to send your query to multiple LLMs, it then asks them to review and rank each other's work, and finally a Chairman LLM produces the final response.
@@ -13,6 +15,33 @@ In a bit more detail, here is what happens when you submit a query:
 ## Vibe Code Alert
 
 This project was 99% vibe coded as a fun Saturday hack because I wanted to explore and evaluate a number of LLMs side by side in the process of [reading books together with LLMs](https://x.com/karpathy/status/1990577951671509438). It's nice and useful to see multiple responses side by side, and also the cross-opinions of all LLMs on each other's outputs. I'm not going to support it in any way, it's provided here as is for other people's inspiration and I don't intend to improve it. Code is ephemeral now and libraries are over, ask your LLM to change it in whatever way you like.
+
+## Enhancements in This Fork
+
+This fork adds several features to the original project:
+
+### 🌓 Dark Mode Support
+- **Toolbar with Theme Switcher**: New toolbar at the top with a toggle button to switch between light and dark modes
+- **Persistent Theme Preference**: Your theme choice is saved to localStorage and persists across sessions
+- **Smooth Transitions**: All UI elements smoothly transition between themes using CSS custom properties
+- **Comprehensive Coverage**: All components (sidebar, chat interface, message stages) support both themes
+
+### 📎 Multimodal Support
+- **File Attachments**: Send images and files along with your queries
+- **Supported File Types**: 
+  - Images: PNG, JPEG, WebP, GIF
+  - Documents: PDF, Plain text
+- **Attachment Preview**: See previews of your attachments before sending
+- **Model Compatibility**: Attachments are sent to multimodal-capable models in the council
+
+### 📚 Documentation
+- Added comprehensive architecture documentation in `docs/AI_ARCHITECTURE.md`
+- Detailed attachment handling guide in `docs/ai-attachments.md`
+
+### 🎨 UI Improvements
+- Cleaner interface with better visual hierarchy
+- Removed redundant title from sidebar (now only in toolbar)
+- Enhanced conversation list with message counts
 
 ## Setup
 
