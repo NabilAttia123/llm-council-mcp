@@ -12,3 +12,6 @@ dependencies = [
     "pydantic>=2.9.0",
     "mcp>=1.24.0",
 ]
+
+[project.scripts]
+llm-council = "mcp_server:main"
