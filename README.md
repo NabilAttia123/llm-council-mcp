@@ -43,7 +43,84 @@ This fork adds several features to the original project:
 - Removed redundant title from sidebar (now only in toolbar)
 - Enhanced conversation list with message counts
 
-## Setup
+## Usage Modes
+
+This project can be used in three different ways depending on your needs:
+
+### Mode 1: Full Web App (Local)
+Run the complete interface locally to visualize the 3-stage process, manage conversation history, and customize the experience.
+
+**Prerequisites**:
+- [uv](https://docs.astral.sh/uv/) installed
+- Node.js & npm installed
+- `.env` file with `OPENROUTER_API_KEY=sk-or-v1-...`
+
+**Run**:
+```bash
+./start.sh
+```
+Or manually:
+```bash
+# Terminal 1
+uv run python -m backend.main
+
+# Terminal 2
+cd frontend && npm run dev
+```
+
+### Mode 2: CLI Script
+Query the council directly from your terminal or scripts. Perfect for quick checks without the web UI.
+
+**Prerequisites**:
+- [uv](https://docs.astral.sh/uv/) installed
+- `.env` file with `OPENROUTER_API_KEY=sk-or-v1-...`
+
+**Run**:
+```bash
+uv run scripts/council_cli.py "Why is my React component re-rendering?" --files src/App.jsx src/components/Header.jsx
+```
+
+**Claude Code Integration**:
+You can use this inside `claude-code` via slash command:
+```bash
+/run uv run scripts/council_cli.py "Refactor this function" --files path/to/file.py
+```
+
+### Mode 3: MCP Server (Claude Integration)
+Integrate the Council directly into **Claude Desktop** or **Claude Code** as a native tool. This runs the logic in stateless mode (in-memory) and doesn't require running a local server manually.
+
+**No Installation Required**:
+You do not need to clone this repo. Just add the following to your Claude config.
+
+**Configuration**:
+Add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "llm-council": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/NabilAttia123/llm-council.git", 
+        "python",
+        "mcp_server.py"
+      ],
+      "env": {
+        "OPENROUTER_API_KEY": "sk-or-v1-..." 
+      }
+    }
+  }
+}
+```
+
+*Note: Replace `sk-or-v1-...` with your actual OpenRouter API Key.*
+
+*Note: Replace `sk-or-v1-...` with your actual OpenRouter API Key.*
+
+## Local Installation & Setup
+
+(Required for **Mode 1** and **Mode 2**, but not for Mode 3)
 
 ### 1. Install Dependencies
 
@@ -54,7 +131,7 @@ The project uses [uv](https://docs.astral.sh/uv/) for project management.
 uv sync
 ```
 
-**Frontend:**
+**Frontend** (Mode 1 only):
 ```bash
 cd frontend
 npm install
@@ -69,11 +146,11 @@ Create a `.env` file in the project root:
 OPENROUTER_API_KEY=sk-or-v1-...
 ```
 
-Get your API key at [openrouter.ai](https://openrouter.ai/). Make sure to purchase the credits you need, or sign up for automatic top up.
+Get your API key at [openrouter.ai](https://openrouter.ai/).
 
 ### 3. Configure Models (Optional)
 
-Edit `backend/config.py` to customize the council:
+You can customize the council members by editing `backend/config.py`:
 
 ```python
 COUNCIL_MODELS = [
@@ -82,35 +159,11 @@ COUNCIL_MODELS = [
     "anthropic/claude-sonnet-4.5",
     "x-ai/grok-4",
 ]
-
-CHAIRMAN_MODEL = "google/gemini-3-pro-preview"
 ```
-
-## Running the Application
-
-**Option 1: Use the start script**
-```bash
-./start.sh
-```
-
-**Option 2: Run manually**
-
-Terminal 1 (Backend):
-```bash
-uv run python -m backend.main
-```
-
-Terminal 2 (Frontend):
-```bash
-cd frontend
-npm run dev
-```
-
-Then open http://localhost:5173 in your browser.
 
 ## Tech Stack
 
 - **Backend:** FastAPI (Python 3.10+), async httpx, OpenRouter API
 - **Frontend:** React + Vite, react-markdown for rendering
-- **Storage:** JSON files in `data/conversations/`
+- **MCP**: Model Context Protocol (FastMCP)
 - **Package Management:** uv for Python, npm for JavaScript
