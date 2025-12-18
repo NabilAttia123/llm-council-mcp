@@ -15,3 +15,7 @@ dependencies = [
 
 [project.scripts]
 llm-council = "mcp_server:main"
+
+[tool.setuptools]
+py-modules = ["mcp_server"]
+packages = ["backend"]
