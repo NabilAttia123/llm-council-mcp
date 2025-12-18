@@ -35,8 +35,8 @@ This fork adds several features to the original project:
 - **Model Compatibility**: Attachments are sent to multimodal-capable models in the council
 
 ### 📚 Documentation
-- Added comprehensive architecture documentation in `docs/AI_ARCHITECTURE.md`
-- Detailed attachment handling guide in `docs/ai-attachments.md`
+- Added comprehensive architecture documentation in `docs/architecture-council.md`
+- Detailed attachment handling guide in `docs/architecture-attachments.md`
 
 ### 🎨 UI Improvements
 - Cleaner interface with better visual hierarchy
@@ -68,23 +68,28 @@ uv run python -m backend.main
 cd frontend && npm run dev
 ```
 
-### Mode 2: CLI Script
-Query the council directly from your terminal or scripts. Perfect for quick checks without the web UI.
+### Mode 2: Portable CLI & Slash Command
+
+Embed the Council into your own projects as a custom `claude-code` workflow (slash command or agent).
 
 **Prerequisites**:
-- [uv](https://docs.astral.sh/uv/) installed
-- `.env` file with `OPENROUTER_API_KEY=sk-or-v1-...`
+1.  **Running Backend**: You must have `llm-council` backend running locally (Mode 1).
+2.  **Files**: Copy the following files to your target project:
+    - `scripts/council_cli.py` -> `scripts/council_cli.py`
+    - `docs/ask-council.md` -> `.claude/commands/ask-council.md` or as an agent `.claude/agents/ask-council.md`
 
-**Run**:
+**Usage**:
+Once installed, you can trigger the council from within your project using:
+
 ```bash
-uv run scripts/council_cli.py "Why is my React component re-rendering?" --files src/App.jsx src/components/Header.jsx
+/ask-council "Why is this code failing?"
 ```
 
-**Claude Code Integration**:
-You can use this inside `claude-code` via slash command:
-```bash
-/run uv run scripts/council_cli.py "Refactor this function" --files path/to/file.py
-```
+The workflow will automatically:
+1.  Analyze your query.
+2.  Find relevant files.
+3.  Consult the running LLM Council backend.
+4.  Stream the collective wisdom back to you.
 
 ### Mode 3: MCP Server (Claude Integration)
 Integrate the Council directly into **Claude Desktop** or **Claude Code** as a native tool. This runs the logic in stateless mode (in-memory) and doesn't require running a local server manually.
@@ -93,7 +98,7 @@ Integrate the Council directly into **Claude Desktop** or **Claude Code** as a n
 You do not need to clone this repo. Just add the following to your Claude config.
 
 **Configuration**:
-Add to `claude_desktop_config.json`:
+Add to `config.json`:
 
 ```json
 {
@@ -104,17 +109,17 @@ Add to `claude_desktop_config.json`:
         "--from",
         "git+https://github.com/NabilAttia123/llm-council.git", 
         "python",
-        "mcp_server.py"
+        "mcp_server.py",
+        "--council-models", "openai/gpt-4o,anthropic/claude-3-opus",
+        "--chairman-model", "anthropic/claude-3.5-sonnet"
       ],
       "env": {
-        "OPENROUTER_API_KEY": "sk-or-v1-..." 
+        "OPENROUTER_API_KEY": "sk-or-v1-..."
       }
     }
   }
 }
 ```
-
-*Note: Replace `sk-or-v1-...` with your actual OpenRouter API Key.*
 
 *Note: Replace `sk-or-v1-...` with your actual OpenRouter API Key.*
 

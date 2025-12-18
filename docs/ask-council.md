@@ -1,8 +1,7 @@
-````bash
+```bash
 ---
 description: Consult the LLM Council for a second opinion on complex problems
 argument-hint: <your question or problem description>
-
 ---
 
 # Consult the LLM Council
@@ -27,13 +26,13 @@ $ARGUMENTS
 Run the council CLI using `python3` with **absolute paths**:
 
 ```bash
-python3 docs/scripts/council_cli.py "CONSTRUCTED_QUERY" --files /Users/nabilattia/My/developer/webPMP/path/to/file1 /Users/nabilattia/My/developer/webPMP/path/to/file2
+python3 scripts/council_cli.py "CONSTRUCTED_QUERY" --files /absolute/path/to/project/file1 /absolute/path/to/project/file2
 ```
 
 **IMPORTANT**:
 
-- Use `python3` (not `.venv/bin/python`)
-- Always use the full absolute path `/Users/nabilattia/My/developer/webPMP/` prefix for all files
+- Use `python3` (or your venv python)
+- Always use the full absolute path prefix for all files
 - Set a timeout of at least 180000ms (3 minutes) as the council process takes time
 
 ## Query Construction Guidelines
@@ -118,6 +117,5 @@ Please review the attached files and suggest a fix or debugging strategy. Open t
 Then execute with relevant files (using absolute paths):
 
 ```bash
-python3 docs/scripts/council_cli.py "..." --files /Users/nabilattia/My/developer/webPMP/backend/auth/LoginController.java /Users/nabilattia/My/developer/webPMP/backend/auth/AuthService.java
+python3 scripts/council_cli.py "..." --files /absolute/path/to/project/backend/auth/LoginController.java /absolute/path/to/project/backend/auth/AuthService.java
 ```
-````
