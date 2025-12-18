@@ -20,6 +20,12 @@ This project was 99% vibe coded as a fun Saturday hack because I wanted to explo
 
 This fork adds several features to the original project:
 
+### 🔌 MCP Server Support (Best Feature!)
+- **Native Claude Integration**: Consult the Council directly from your IDE or Claude Desktop as a tool/agent
+- **Use in Any Project**: Bring the Council's wisdom to any codebase without switching windows
+- **Stateless Execution**: Runs pure logic in-memory, keeping your chat history clean
+- **Easy Installation**: One-line install via `uvx` (no cloning required)
+
 ### 🌓 Dark Mode Support
 - **Toolbar with Theme Switcher**: New toolbar at the top with a toggle button to switch between light and dark modes
 - **Persistent Theme Preference**: Your theme choice is saved to localStorage and persists across sessions
@@ -92,13 +98,21 @@ The workflow will automatically:
 4.  Stream the collective wisdom back to you.
 
 ### Mode 3: MCP Server (Claude Integration)
-Integrate the Council directly into **Claude Desktop** or **Claude Code** as a native tool. This runs the logic in stateless mode (in-memory) and doesn't require running a local server manually.
+Integrate the Council directly into **Claude Code** as a native tool. This runs the logic in stateless mode (in-memory) and doesn't require running a local server manually.
 
-**No Installation Required**:
-You do not need to clone this repo. Just add the following to your Claude config.
+**Quick Install (One-Liner)**:
+```bash
+claude mcp add llm-council \
+  -e OPENROUTER_API_KEY=sk-or-v1-YOUR-KEY \
+  uvx --from git+https://github.com/NabilAttia123/llm-council-mcp.git \
+  python mcp_server.py \
+  --council-models "openai/gpt-5.1,google/gemini-3-pro-preview,anthropic/claude-sonnet-4.5,x-ai/grok-4.1-fast" \
+  --chairman-model "openai/gpt-5.1"
+```
+*Note: You can customize the models directly in this command by changing the `--council-models` and `--chairman-model` flags.*
 
-**Configuration**:
-Add to `config.json`:
+**Manual Configuration**:
+If you prefer adding to `config.json` manually:
 
 ```json
 {
@@ -107,11 +121,29 @@ Add to `config.json`:
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/NabilAttia123/llm-council.git", 
+        "git+https://github.com/NabilAttia123/llm-council-mcp.git", 
         "python",
         "mcp_server.py",
         "--council-models", "openai/gpt-4o,anthropic/claude-3-opus",
         "--chairman-model", "anthropic/claude-3.5-sonnet"
+      ],
+      "env": {
+        "OPENROUTER_API_KEY": "sk-or-v1-..."
+      }
+    }
+  }
+}
+```
+
+*Note: Replace `sk-or-v1-...` with your actual OpenRouter API Key.*
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/NabilAttia123/llm-council-mcp.git", 
+        "python",
+        "mcp_server.py",
+        "--council-models", "openai/gpt-4o,anthropic/claude-3-opus",
+        "--chairman-model", "anthropic/claude-opus-4-5"
       ],
       "env": {
         "OPENROUTER_API_KEY": "sk-or-v1-..."
@@ -162,9 +194,11 @@ COUNCIL_MODELS = [
     "openai/gpt-5.1",
     "google/gemini-3-pro-preview",
     "anthropic/claude-sonnet-4.5",
-    "x-ai/grok-4",
+    "x-ai/grok-4.1-fast",
 ]
 ```
+
+*Tip: If using **Mode 3 (MCP)**, you don't need to edit this file. You can simply pass `--council-models "model1,model2"` and `--chairman-model "model3"` directly in your `claude mcp add` command.*
 
 ## Tech Stack
 
