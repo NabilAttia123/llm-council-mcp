@@ -34,7 +34,8 @@ async def query_model(
     }
     
     import json
-    print(f"DEBUG PAYLOAD for {model}: {json.dumps(payload, indent=2)}")
+    import sys
+    print(f"DEBUG PAYLOAD for {model}: {json.dumps(payload, indent=2)}", file=sys.stderr)
 
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:

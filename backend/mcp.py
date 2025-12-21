@@ -56,20 +56,38 @@ async def consult_council(query: str, files: list[str] = []) -> str:
     
     # Format the Output as Markdown
     output = []
-    
+
     output.append("# LLM Council Deliberation\n")
-    
-    # Stage 1 Summary
-    output.append("## Stage 1: Exploration")
+
+    # Stage 1: Individual Model Responses
+    output.append("## Stage 1: Individual Responses")
     output.append(f"Consulted {len(stage1)} models.\n")
-    
-    # Stage 2 Rankings
-    output.append("## Stage 2: Peer Review & Ranking")
+    for resp in stage1:
+        model_name = resp.get("model", "Unknown")
+        response_text = resp.get("response", "No response")
+        output.append(f"### {model_name}")
+        output.append(response_text)
+        output.append("\n---\n")
+
+    # Stage 2: Rankings
+    output.append("## Stage 2: Peer Rankings")
+
+    # Show each model's ranking
+    for evaluation in stage2:
+        model_name = evaluation.get("model", "Unknown")
+        parsed = evaluation.get("parsed_ranking", [])
+        if parsed:
+            output.append(f"- **{model_name}**: {' > '.join(parsed)}")
+
+    output.append("")
+
+    # Aggregate rankings
     if "aggregate_rankings" in metadata:
+        output.append("**Aggregate:**")
         for item in metadata["aggregate_rankings"]:
             output.append(f"- **{item['model']}**: Avg Rank {item['average_rank']}")
     output.append("\n")
-    
+
     # Stage 3 Verdict (The most important part)
     output.append("## CHAIRMAN'S VERDICT")
     output.append(stage3.get("response", "Error: No verdict generated."))
