@@ -2,11 +2,9 @@
 
 > **Note**: This is a fork of [karpathy/llm-council](https://github.com/karpathy/llm-council) with additional features and enhancements.
 
-![llmcouncil](header.jpg)
-
 ## Why Use an LLM Council?
 
-When you're stuck on a tricky problem in Claude Code or any other MCP-supporting CLI tool, get a second opinion from multiple frontier models at once. The LLM Council queries GPT-5.1, Gemini 3 Pro, Claude Opus 4.5, and Grok 4 simultaneously, has them critique each other's responses, and synthesizes the best insights into a single actionable answer.
+When you're stuck on a tricky problem in Claude Code or any other CLI tool, get a second opinion from multiple frontier models at once. The LLM Council queries GPT-5.1, Gemini 3 Pro, Claude Opus 4.5, and Grok 4 simultaneously, has them critique each other's responses, and synthesizes the best insights into a single actionable answer.
 
 **The 3-Stage Process:**
 
@@ -24,14 +22,15 @@ This approach reduces hallucinations, surfaces diverse perspectives, and produce
 - **Stateless Execution**: Runs pure logic in-memory, keeping your chat history clean
 - **Easy Installation**: One-line install via `uvx` (no cloning required)
 
+### Multimodal Support
+
+- **File Attachments**: Send images and files along with your queries
+- **Supported File Types**: Images (PNG, JPEG, WebP, GIF), Documents (PDF, Plain text)
+
 ### Dark Mode Support
 - **Toolbar with Theme Switcher**: Toggle button to switch between light and dark modes
 - **Persistent Theme Preference**: Your theme choice is saved to localStorage
 - **Smooth Transitions**: All UI elements smoothly transition between themes
-
-### Multimodal Support
-- **File Attachments**: Send images and files along with your queries
-- **Supported File Types**: Images (PNG, JPEG, WebP, GIF), Documents (PDF, Plain text)
 
 ### Documentation
 - Comprehensive architecture documentation in `docs/architecture-council.md`
