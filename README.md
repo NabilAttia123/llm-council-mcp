@@ -6,11 +6,11 @@
 
 ## Why Use an LLM Council?
 
-When you're stuck on a tricky problem in Claude Code or any other MCP-supporting CLI tool, get a second opinion from multiple frontier models at once. The LLM Council queries GPT-5.1, Gemini 3 Pro, Claude Sonnet 4.5, and Grok 4 simultaneously, has them critique each other's responses, and synthesizes the best insights into a single actionable answer.
+When you're stuck on a tricky problem in Claude Code or any other MCP-supporting CLI tool, get a second opinion from multiple frontier models at once. The LLM Council queries GPT-5.1, Gemini 3 Pro, Claude Opus 4.5, and Grok 4 simultaneously, has them critique each other's responses, and synthesizes the best insights into a single actionable answer.
 
 **The 3-Stage Process:**
 
-1. **Stage 1: First Opinions** - Your query is sent to all council members (e.g., GPT-5.1, Gemini 3 Pro, Claude Sonnet 4.5, Grok 4). Each responds independently.
+1. **Stage 1: First Opinions** - Your query is sent to all council members (e.g., GPT-5.1, Gemini 3 Pro, Claude Opus 4.5, Grok 4). Each responds independently.
 2. **Stage 2: Peer Review** - Each model reviews and ranks the other responses (anonymized to prevent bias), evaluating accuracy and insight.
 3. **Stage 3: Chairman's Verdict** - A designated Chairman LLM synthesizes all responses and reviews into a single, refined final answer.
 
@@ -94,7 +94,7 @@ claude mcp add llm-council \
   -e OPENROUTER_API_KEY=sk-or-v1-YOUR-KEY \
   -- uvx --from git+ssh://git@github.com/NabilAttia123/llm-council-mcp.git \
   llm-council \
-  --council-models "openai/gpt-5.1,google/gemini-3-pro-preview,anthropic/claude-sonnet-4.5,x-ai/grok-4.1-fast" \
+  --council-models "openai/gpt-5.1,google/gemini-3-pro-preview,anthropic/claude-opus-4.5,x-ai/grok-4.1-fast" \
   --chairman-model "openai/gpt-5.1"
 ```
 *Note: You can customize the models directly in this command by changing the `--council-models` and `--chairman-model` flags.*
@@ -111,7 +111,7 @@ If you prefer adding to your Claude settings manually:
         "--from",
         "git+ssh://git@github.com/NabilAttia123/llm-council-mcp.git",
         "llm-council",
-        "--council-models", "openai/gpt-5.1,google/gemini-3-pro-preview,anthropic/claude-sonnet-4.5,x-ai/grok-4.1-fast",
+        "--council-models", "openai/gpt-5.1,google/gemini-3-pro-preview,anthropic/claude-opus-4.5,x-ai/grok-4.1-fast",
         "--chairman-model", "openai/gpt-5.1"
       ],
       "env": {
@@ -162,7 +162,7 @@ You can customize the council members by editing `backend/config.py`:
 COUNCIL_MODELS = [
     "openai/gpt-5.1",
     "google/gemini-3-pro-preview",
-    "anthropic/claude-sonnet-4.5",
+    "anthropic/claude-opus-4.5",
     "x-ai/grok-4.1-fast",
 ]
 ```
