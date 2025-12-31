@@ -4,11 +4,11 @@
 
 ## Why Use an LLM Council?
 
-When you're stuck on a tricky problem in Claude Code or any other CLI tool, get a second opinion from multiple frontier models at once. The LLM Council queries GPT-5.1, Gemini 3 Pro, Claude Opus 4.5, and Grok 4 simultaneously, has them critique each other's responses, and synthesizes the best insights into a single actionable answer.
+When you're stuck on a tricky problem in Claude Code or any other CLI tool, get a second opinion from multiple frontier models at once. The LLM Council queries GPT, Gemini, Claude, Grok, or any LLM hosted on OpenRouter simultaneously, has them critique each other's responses, and synthesizes the best insights into a single actionable answer.
 
 **The 3-Stage Process:**
 
-1. **Stage 1: First Opinions** - Your query is sent to all council members (e.g., GPT-5.1, Gemini 3 Pro, Claude Opus 4.5, Grok 4). Each responds independently.
+1. **Stage 1: First Opinions** - Your query is sent to all council members (e.g., GPT, Gemini, Claude, Grok). Each responds independently.
 2. **Stage 2: Peer Review** - Each model reviews and ranks the other responses (anonymized to prevent bias), evaluating accuracy and insight.
 3. **Stage 3: Chairman's Verdict** - A designated Chairman LLM synthesizes all responses and reviews into a single, refined final answer.
 
